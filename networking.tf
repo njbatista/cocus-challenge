@@ -39,7 +39,7 @@ resource "aws_subnet" "awslab-subnet-private" {
   vpc_id                   = aws_vpc.awslab-vpc.id
   cidr_block               = "${var.private-subnet-cidr}"
   availability_zone        = "eu-west-2b"
-  map_public_ip_on_launch  = true
+  map_public_ip_on_launch  = false
 
   tags      = {
     Name    = "awslab-subnet-private"

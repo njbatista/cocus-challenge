@@ -51,20 +51,32 @@ resource "aws_subnet" "awslab-subnet-private" {
 resource "aws_default_route_table" "route-table" {
   default_route_table_id = aws_vpc.awslab-vpc.default_route_table_id 
 
-  route {
-    cidr_block = "${var.route-cidr}"
-    gateway_id = aws_internet_gateway.internet-gateway.id
-  }
   tags      = {
-    Name    = "awslab-rt-internet"
+    Name    = "awslab-rt-private"
   }
 }
 
-# Associate Public Subnet to "Default Route Table"
+# Create public routing table
+# terraform aws default route table
+resource "aws_route_table" "awslab-rt-internet" {
+  vpc_id = aws_vpc.awslab-vpc.id
+
+  route {
+    cidr_block = "${var.route-cidr}"
+    gateway_id = aws_internet_gateway.internet-gateway.id
+
+  }
+
+  tags = {
+    Name = "awslab-rt-internet"
+  }
+}
+
+# Associate Public Subnet to private route table
 # terraform aws associate subnet with route table
 resource "aws_route_table_association" "public-subnet-route-table-association" {
   subnet_id           = aws_subnet.awslab-subnet-public.id
-  route_table_id      = aws_default_route_table.route-table.id
+  route_table_id      = aws_route_table.awslab-rt-internet.id
 }
 
 # Associate Private Subnet to "Default Route Table"
@@ -73,4 +85,3 @@ resource "aws_route_table_association" "private-subnet-route-table-association" 
   subnet_id           = aws_subnet.awslab-subnet-private.id
   route_table_id      = aws_default_route_table.route-table.id
 }
-

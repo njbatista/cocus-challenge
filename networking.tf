@@ -29,7 +29,7 @@ resource "aws_subnet" "awslab-subnet-public" {
   map_public_ip_on_launch = true
 
   tags      = {
-    Name    = "public subnet"
+    Name    = "awslab-subnet-public"
   }
 }
 
@@ -37,23 +37,40 @@ resource "aws_subnet" "awslab-subnet-public" {
 # terraform aws create subnet
 resource "aws_subnet" "awslab-subnet-private" {
   vpc_id                   = aws_vpc.awslab-vpc.id
-  cidr_block               = "${var.public-subnet-cidr}"
+  cidr_block               = "${var.private-subnet-cidr}"
   availability_zone        = "eu-west-2b"
   map_public_ip_on_launch  = true
 
   tags      = {
-    Name    = "private subnet"
+    Name    = "awslab-subnet-private"
   }
 }
 
 # Use default routing table
 # terraform aws default route table
 resource "aws_default_route_table" "route-table" {
-  default_route_table_id = aws_default_route_table.route-table.id
-  vpc_id                 = aws_vpc.awslab-vpc.id
+  default_route_table_id = aws_vpc.awslab-vpc.default_route_table_id 
 
   route {
     cidr_block = "${var.route-cidr}"
     gateway_id = aws_internet_gateway.internet-gateway.id
   }
+  tags      = {
+    Name    = "awslab-rt-internet"
+  }
 }
+
+# Associate Public Subnet to "Default Route Table"
+# terraform aws associate subnet with route table
+resource "aws_route_table_association" "public-subnet-route-table-association" {
+  subnet_id           = aws_subnet.awslab-subnet-public.id
+  route_table_id      = aws_default_route_table.route-table.id
+}
+
+# Associate Private Subnet to "Default Route Table"
+# terraform aws associate subnet with route table
+resource "aws_route_table_association" "private-subnet-route-table-association" {
+  subnet_id           = aws_subnet.awslab-subnet-private.id
+  route_table_id      = aws_default_route_table.route-table.id
+}
+

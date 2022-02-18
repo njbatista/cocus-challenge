@@ -22,6 +22,6 @@ variable "route-cidr" {
   type = string
 }
 variable "AMI" {
-  default = "ami-0dd555eb7eb3b7c82"
+  default = "ami-07e34585769e6bee7"
   description = "AMI eu-west-2"
 }

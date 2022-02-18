@@ -35,6 +35,12 @@ resource "aws_security_group" "public-security-group" {
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
   }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
 
   tags   = {
     Name = "public-security-group"
@@ -70,6 +76,12 @@ resource "aws_security_group" "private-security-group" {
     to_port          = 22
     protocol         = "tcp"
     cidr_blocks      = ["172.16.1.0/24"]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
   }
 
   tags   = {

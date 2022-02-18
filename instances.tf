@@ -6,7 +6,7 @@ resource "aws_key_pair" "public-key" {
 
 }
 
-# Create Amazon Linux 2 EC2 Instance for webserver
+# Create customAmazon Linux 2 EC2 Instance for webserver
 # terraform aws instance
 resource "aws_instance" "webserver-ec2-instance" {
   ami                         = "${var.AMI}"
@@ -16,13 +16,13 @@ resource "aws_instance" "webserver-ec2-instance" {
   subnet_id                   = aws_subnet.awslab-subnet-public.id
   associate_public_ip_address = true
   user_data                   = "${file("install_apache.sh")}"
+ 
 
   tags = {
     Name = "Webserver EC2 Instance"
   }
- 
 }
-# Create Amazon Linux 2 EC2 Instance for Database
+# Create custom Amazon Linux 2 EC2 Instance for Database
 # terraform aws instance
 resource "aws_instance" "database-ec2-instance" {
   ami                         = "${var.AMI}"

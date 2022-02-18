@@ -1,18 +1,9 @@
-#Creates tls private key
-# terraform tls private key
-resource "tls_private_key" "private-key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
 #Creates public key
 # terraform aws key pair
 resource "aws_key_pair" "public-key" {
   key_name   = "myKey"
-  public_key = tls_private_key.private-key.public_key_openssh
+  public_key = "${file("public.pem")}"
 
-  provisioner "local-exec" { # Create "myKey.pem" to your computer!!
-    command = "echo '${tls_private_key.private-key.private_key_pem}' > ./myKey.pem"
-  }
 }
 
 # Create Amazon Linux 2 EC2 Instance for webserver
